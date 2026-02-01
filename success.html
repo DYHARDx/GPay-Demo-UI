@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Payment Successful</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+        }
+
+        .mobile-container {
+            width: 100%;
+            max-width: 412px;
+            background: #f0f2f5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Green Header - PhonePe Style */
+        .success-header {
+            background-color: #26a541;
+            /* PhonePe Authentic Green */
+            padding: 50px 20px 60px 20px;
+            color: white;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .tick-circle {
+            width: 55px;
+            height: 55px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            /* Standard smooth pop animation */
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            opacity: 0;
+        }
+
+        .tick-circle svg {
+            width: 32px;
+            height: 32px;
+            fill: #26a541;
+        }
+
+        .status-text {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: 0.3px;
+            opacity: 1;
+            /* Always visible */
+        }
+
+        .date-text {
+            font-size: 13px;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        /* Main Floating Card */
+        .main-card {
+            background: #fff;
+            border-radius: 12px;
+            margin: -40px 15px 20px 15px;
+            /* Overlap header */
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Merchant Info */
+        .merchant-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .merchant-logo {
+            width: 50px;
+            height: 50px;
+            border: 1px solid #f1f1f1;
+            border-radius: 10px;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .merchant-details h3 {
+            margin: 0;
+            font-size: 17px;
+            color: #202124;
+            font-weight: 600;
+        }
+
+        .amount-row {
+            display: flex;
+            align-items: center;
+            margin-top: 4px;
+        }
+
+        .amount-main {
+            font-size: 20px;
+            font-weight: 700;
+            color: #202124;
+            margin-right: 12px;
+        }
+
+        .split-link {
+            font-size: 13px;
+            color: #673ab7;
+            /* Purple */
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        /* Redeem Code Box (Dark Card) */
+        .redeem-box {
+            background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+            color: white;
+            border-radius: 10px;
+            padding: 18px;
+            margin-bottom: 20px;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .pin-label {
+            font-size: 11px;
+            color: #b0b0b0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .redeem-code {
+            font-size: 19px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            margin-bottom: 25px;
+            font-family: 'Roboto Mono', monospace;
+            color: #fff;
+            width: 85%;
+        }
+
+        .copy-icon {
+            position: absolute;
+            right: 15px;
+            top: 20px;
+            fill: #d0d0d0;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .copy-icon:active {
+            transform: scale(0.9);
+            fill: #fff;
+        }
+
+        /* Tooltip for Copy */
+        .copy-tooltip {
+            position: absolute;
+            top: 5px;
+            right: 45px;
+            background: #fff;
+            color: #333;
+            font-size: 10px;
+            padding: 3px 6px;
+            border-radius: 4px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .redeem-btn {
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .redeem-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .redeem-btn svg {
+            width: 14px;
+            height: 14px;
+            fill: #fff;
+            margin-right: 6px;
+        }
+
+        /* Bottom Action Buttons */
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            padding: 0 15px;
+        }
+
+        .act-btn {
+            background: #fff;
+            padding: 15px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            flex: 1;
+        }
+
+        .act-icon-circle {
+            width: 32px;
+            height: 32px;
+            background: #f3e5f5;
+            /* Light Purple */
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+        }
+
+        .act-icon-circle svg {
+            width: 18px;
+            height: 18px;
+            fill: #8e24aa;
+        }
+
+        /* Ad / Banner */
+        .ad-banner {
+            margin: 20px 15px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .ad-banner img {
+            width: 100%;
+            display: block;
+            height: 100px;
+            /* Constrain height */
+            object-fit: cover;
+        }
+
+        .home-link {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .home-link a {
+            color: #26a541;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="mobile-container">
+        <!-- Green Header -->
+        <div class="success-header">
+            <div class="tick-circle">
+                <svg viewBox="0 0 24 24">
+                    <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
+                </svg>
+            </div>
+            <div class="status-text">Payment Successful</div>
+            <div class="date-text" id="dateTime">--</div>
+        </div>
+
+        <!-- Main Card -->
+        <div class="main-card">
+            <!-- Merchant -->
+            <div class="merchant-row">
+                <div class="merchant-logo">
+                    <!-- Google Play Logo -->
+                    <svg viewBox="0 0 24 24" style="width: 35px; height: 35px;">
+                        <path fill="#EA4335" d="M4.5 17.5L3 18.9V5.1L4.5 6.5l5.9 5.2-1.9 1.9-4 3.9z"></path>
+                        <path fill="#FBBC04" d="M4.5 17.5l4-3.9 1.9 1.9 1.8 1.8L4.6 21c-.4.2-.1-3.5-.1-3.5z"></path>
+                        <path fill="#34A853" d="M12.2 15.5l-1.8-1.8-1.9-1.9 6-6.1 4.7 2.7c.9.5.9 1.4 0 1.9L12.2 15.5z">
+                        </path>
+                        <path fill="#4285F4" d="M4.5 6.5L14.5 2.2c.4-.2.8-.2.9.1l-4.9 2.8-6 6.1v-4.7z"></path>
+                    </svg>
+                </div>
+                <div class="merchant-details">
+                    <h3>Google Play</h3>
+                    <div class="amount-row">
+                        <span class="amount-main" id="succAmount">₹0</span>
+                        <a href="#" class="split-link">Split Expense</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Black Redeem Box -->
+            <div class="redeem-box">
+                <div class="pin-label">PIN / REDEEM CODE</div>
+                <div class="redeem-code" id="redeemCode">.... .... .... ....</div>
+
+                <div class="copy-tooltip" id="copyTooltip">Copied!</div>
+                <svg class="copy-icon" onclick="copyToClipboard()" viewBox="0 0 24 24">
+                    <path
+                        d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
+                </svg>
+
+                <a href="https://play.google.com/redeem" target="_blank" class="redeem-btn">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
+                    </svg>
+                    Redeem Now
+                </a>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <div class="act-btn">
+                <div class="act-icon-circle">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
+                    </svg>
+                </div>
+                View Details
+            </div>
+
+            <div class="act-btn">
+                <div class="act-icon-circle">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" />
+                    </svg>
+                </div>
+                Share Receipt
+            </div>
+        </div>
+
+        <!-- Bottom Ad -->
+        <div class="ad-banner">
+            <img src="images/popup_6.png" alt="Offer">
+        </div>
+
+        <div class="home-link">
+            <a href="index.html">Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        // Set Data
+        const urlParams = new URLSearchParams(window.location.search);
+        const amount = urlParams.get('amount') || '0';
+        document.getElementById('succAmount').innerText = `₹${amount}`;
+
+        // FORCE BACK TO HOME
+        history.pushState(null, null, location.href);
+        window.onpopstate = function () {
+            window.location.href = "index.html";
+        };
+
+        // Set Date
+        const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+        document.getElementById('dateTime').innerText = new Date().toLocaleString('en-US', options);
+
+        // Generate Random Redeem Code (Format: XXXX XXXX XXXX XXXX)
+        function generateCode() {
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            let code = "";
+            for (let block = 0; block < 4; block++) {
+                for (let i = 0; i < 4; i++) {
+                    code += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                if (block < 3) code += " ";
+            }
+            return code;
+        }
+        const generatedCode = generateCode();
+        document.getElementById('redeemCode').innerText = generatedCode;
+
+        function copyToClipboard() {
+            navigator.clipboard.writeText(generatedCode).then(() => {
+                showTooltip();
+            }).catch(err => {
+                showTooltip();
+            });
+        }
+
+        function showTooltip() {
+            const tooltip = document.getElementById('copyTooltip');
+            tooltip.style.opacity = '1';
+            setTimeout(() => {
+                tooltip.style.opacity = '0';
+            }, 1500);
+        }
+    </script>
+</body>
+
+</html>

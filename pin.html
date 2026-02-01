@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Enter UPI PIN</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #fff;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-pin {
+            background: #1a73e8;
+            /* GPay Blue Header */
+            padding: 15px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .bank-info {
+            font-size: 14px;
+        }
+
+        .pin-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 50px;
+        }
+
+        .enter-pin-label {
+            font-size: 14px;
+            color: #5f6368;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .dots-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 1px solid #ccc;
+        }
+
+        .dot.active {
+            background-color: #333;
+            border-color: #333;
+        }
+
+        /* Error Message Style */
+        .error-msg {
+            color: #d93025;
+            font-size: 14px;
+            font-weight: 500;
+            margin-top: 10px;
+            display: none;
+        }
+
+        /* Numpad */
+        .numpad {
+            background: #f1f3f4;
+            padding-bottom: 20px;
+        }
+
+        .row {
+            display: flex;
+            width: 100%;
+        }
+
+        .key {
+            flex: 1;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            color: #333;
+            border: 0.5px solid #e0e0e0;
+            cursor: pointer;
+            background: #fff;
+        }
+
+        .key:active {
+            background: #e8e8e8;
+        }
+
+        .key-submit {
+            background: #1a73e8;
+            color: white;
+        }
+
+        .key-backspace svg {
+            width: 24px;
+            height: 24px;
+            fill: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header-pin">
+        <div class="bank-info">Google Pay</div>
+        <div style="font-size: 12px; opacity: 0.8;">UPI PIN</div>
+    </div>
+
+    <div class="pin-container">
+        <div class="enter-pin-label">ENTER 6-DIGIT UPI PIN</div>
+
+        <div class="dots-container">
+            <div class="dot" id="dot1"></div>
+            <div class="dot" id="dot2"></div>
+            <div class="dot" id="dot3"></div>
+            <div class="dot" id="dot4"></div>
+            <div class="dot" id="dot5"></div>
+            <div class="dot" id="dot6"></div>
+        </div>
+
+        <!-- Error Text -->
+        <div class="error-msg" id="errorText">Incorrect UPI PIN</div>
+    </div>
+
+    <div class="numpad">
+        <div class="row">
+            <div class="key" onclick="press(1)">1</div>
+            <div class="key" onclick="press(2)">2</div>
+            <div class="key" onclick="press(3)">3</div>
+        </div>
+        <div class="row">
+            <div class="key" onclick="press(4)">4</div>
+            <div class="key" onclick="press(5)">5</div>
+            <div class="key" onclick="press(6)">6</div>
+        </div>
+        <div class="row">
+            <div class="key" onclick="press(7)">7</div>
+            <div class="key" onclick="press(8)">8</div>
+            <div class="key" onclick="press(9)">9</div>
+        </div>
+        <div class="row">
+            <div class="key" style="background:#f1f3f4;"></div> <!-- Empty -->
+            <div class="key" onclick="press(0)">0</div>
+            <div class="key key-backspace" onclick="backspace()">
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-3 12.59L17.59 17 14 13.41 10.41 17 9 15.59 12.59 12 9 8.41 10.41 7 14 10.59 17.59 7 19 8.41 15.41 12 19 15.59z" />
+                </svg>
+            </div>
+        </div>
+        <div class="row">
+            <div class="key key-submit" onclick="submitPin()"
+                style="flex: 1; height: 50px; margin: 10px 20px; border-radius: 4px;">Submit</div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        let currentPin = "";
+        const urlParams = new URLSearchParams(window.location.search);
+        const mode = urlParams.get('mode') || 'balance';
+        const amount = urlParams.get('amount') || '0';
+
+        // This clears script.js loadBalance call effect if any
+
+        function press(num) {
+            document.getElementById('errorText').style.display = 'none'; // Hide error on type
+            if (currentPin.length < 6) {
+                currentPin += num;
+                updateDots();
+            }
+        }
+
+        function backspace() {
+            currentPin = currentPin.slice(0, -1);
+            updateDots();
+            document.getElementById('errorText').style.display = 'none';
+        }
+
+        function updateDots() {
+            for (let i = 1; i <= 6; i++) {
+                let dot = document.getElementById(`dot${i}`);
+                if (i <= currentPin.length) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            }
+        }
+
+        function submitPin() {
+            if (currentPin === "113114") {
+                if (mode === 'payment') {
+                    // Process Payment Logic here (Deduct Balance + Save History)
+                    // We need to call functions from script.js, but since variables are local there,
+                    // we will implement logic here directly using localStorage.
+
+                    let currentBal = parseInt(localStorage.getItem('walletBalance'));
+                    let payAmount = parseInt(amount);
+
+                    if (currentBal >= payAmount) {
+                        let newBal = currentBal - payAmount;
+                        localStorage.setItem('walletBalance', newBal);
+
+                        // Add History
+                        let transactions = JSON.parse(localStorage.getItem('redeemHistory') || '[]');
+                        let date = new Date().toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+                        transactions.unshift({ amount: payAmount, date: date, fullDate: new Date().toLocaleString(), status: "Success" });
+                        localStorage.setItem('redeemHistory', JSON.stringify(transactions));
+
+                        window.location.href = `success.html?amount=${payAmount}`;
+                    } else {
+                        alert("Insufficient Balance!");
+                        window.location.href = "index.html";
+                    }
+
+                } else {
+                    // Balance Check Mode
+                    window.location.href = "balance.html";
+                }
+            } else {
+                // Wrong PIN
+                document.getElementById('errorText').style.display = 'block';
+
+                // Shake Animation (Simulated by clearing)
+                setTimeout(() => {
+                    currentPin = "";
+                    updateDots();
+                }, 500);
+            }
+        }
+    </script>
+</body>
+
+</html>

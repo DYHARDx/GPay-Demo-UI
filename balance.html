@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Pay Balance</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Google Sans', 'Roboto', sans-serif;
+            background-color: #fff;
+            color: #202124;
+        }
+
+        .mobile-container {
+            max-width: 412px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Header */
+        .gp-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 20px;
+        }
+
+        .gp-back {
+            width: 24px;
+            height: 24px;
+            fill: #5f6368;
+            cursor: pointer;
+        }
+
+        /* Balance Section */
+        .balance-section {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .gp-logo-small {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 10px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+
+        .bal-label {
+            font-size: 16px;
+            color: #202124;
+            margin-bottom: 5px;
+        }
+
+        .bal-amount {
+            font-size: 45px;
+            /* Big font like screenshot */
+            color: #202124;
+            font-weight: 400;
+            margin-bottom: 25px;
+        }
+
+        /* Action Buttons */
+        .action-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .gp-btn {
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .gp-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: white;
+            margin-right: 8px;
+        }
+
+        /* Setup Card */
+        .setup-card {
+            border: 1px solid #dadce0;
+            border-radius: 12px;
+            margin: 0 20px 30px 20px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 2px rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+        }
+
+        .card-text h3 {
+            margin: 0 0 8px 0;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .card-text p {
+            margin: 0 0 15px 0;
+            font-size: 14px;
+            color: #5f6368;
+            line-height: 1.4;
+        }
+
+        .setup-link {
+            color: #1a73e8;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .card-img {
+            width: 60px;
+            height: 60px;
+            background: #e8f0fe;
+            /* Placeholder blue circle */
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Recent Activity */
+        .activity-section {
+            flex: 1;
+            padding: 0 20px;
+        }
+
+        .act-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .act-title {
+            font-size: 18px;
+            font-weight: 500;
+            color: #202124;
+        }
+
+        .show-all {
+            color: #1a73e8;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* List Items reuse */
+        .activity-list {
+            display: block;
+        }
+
+        .history-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 15px 0;
+            cursor: pointer;
+        }
+
+        .hist-icon {
+            width: 40px;
+            height: 40px;
+            margin-right: 15px;
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .play-logo-icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        .hist-details {
+            flex: 1;
+        }
+
+        .hist-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #202124;
+            margin-bottom: 4px;
+        }
+
+        .hist-time {
+            font-size: 14px;
+            color: #5f6368;
+        }
+
+        .hist-amount {
+            font-size: 16px;
+            color: #202124;
+            /* Black for debit usually, green for credit */
+            font-weight: 500;
+        }
+
+        .green-text {
+            color: #188038;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="mobile-container">
+        <!-- Header -->
+        <div class="gp-header">
+            <svg class="gp-back" onclick="goBack()" viewBox="0 0 24 24">
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
+            </svg>
+            <div style="width: 24px;"></div> <!-- Spacer -->
+        </div>
+
+        <!-- Balance -->
+        <div class="balance-section">
+            <svg class="gp-logo-small" viewBox="0 0 24 24">
+                <path fill="#5f6368"
+                    d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z" />
+            </svg>
+            <div class="bal-label">Google Pay balance</div>
+            <div class="bal-amount" id="gpayBalance">₹0</div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="action-container">
+            <button class="gp-btn">
+                <svg viewBox="0 0 24 24">
+                    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+                </svg>
+                Add money
+            </button>
+            <button class="gp-btn">
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M15 4H5v16h14V8h-4V4zM3 2.99C3 1.89 3.89 1 4.99 1H15l5 5v14c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V2.99z" />
+                </svg>
+                Transfer out
+            </button>
+        </div>
+
+        <!-- Setup Card -->
+        <div class="setup-card">
+            <div class="card-text">
+                <h3>Set up your Google Pay balance for contactless payments</h3>
+                <p>Use your balance wherever Google Pay is accepted</p>
+                <a href="#" class="setup-link">Set it up</a>
+            </div>
+            <div class="card-img">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="#1a73e8">
+                    <path
+                        d="M13 1.07V9h7c0-4.08-3.05-7.44-6.91-7.93zM4 15c0 4.42 3.58 8 8 8s8-3.58 8-8v-4H4v4zm7-13.93C7.05 1.56 4 4.92 4 9h7V1.07z" />
+                </svg>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="activity-section">
+            <div class="act-header">
+                <div class="act-title">Recent activity</div>
+                <a href="history.html" class="show-all">Show all</a>
+            </div>
+
+            <div id="historyList" class="activity-list">
+                <!-- Javascript will inject items here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Reuse -->
+    <script src="script.js"></script>
+    <script>
+        // Override the loadHistory function just for this page to match UI style?
+        // Actually, let's keep it simple. The script.js injects HTML.
+        // We'll update script.js to inject more generic HTML that fits both,
+        // OR we can add a specific style class in the script.js if needed.
+        // For now, let's update script.js to produce cleaner HTML that style.css handles.
+    </script>
+</body>
+
+</html>
