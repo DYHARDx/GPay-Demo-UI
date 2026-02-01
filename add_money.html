@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Money</title>
+    <!-- Google Sans Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a73e8;
+            --success: #0f9d58;
+            --bg-color: #f8f9fa;
+            --surface: #ffffff;
+            --text-primary: #3c4043;
+            --text-secondary: #5f6368;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Google Sans', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            height: 100vh;
+            height: 100dvh;
+            display: flex;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .mobile-container {
+            width: 100%;
+            max-width: 412px;
+            background-color: var(--surface);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+            height: 100%;
+        }
+
+        @media (max-width: 412px) {
+            .mobile-container {
+                max-width: none;
+                box-shadow: none;
+            }
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            padding: 16px 20px;
+            background: var(--surface);
+            z-index: 10;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background 0.2s;
+            margin-right: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .back-btn:active {
+            background: #f1f3f4;
+        }
+
+        .back-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--text-secondary);
+        }
+
+        .header-title {
+            font-size: 20px;
+            color: var(--text-primary);
+            font-weight: 400;
+        }
+
+        /* QR Section */
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .payment-card {
+            background: white;
+            padding: 30px;
+            border-radius: 24px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            /* Soft shadow */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 320px;
+            box-sizing: border-box;
+            margin-top: -40px;
+            /* Visual balance */
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .qr-wrapper {
+            position: relative;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            margin-bottom: 24px;
+        }
+
+        .qr-image {
+            width: 220px;
+            height: 220px;
+            object-fit: contain;
+            border-radius: 8px;
+            display: block;
+        }
+
+        .scan-line {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            height: 2px;
+            background: #4285f4;
+            box-shadow: 0 0 4px #4285f4;
+            animation: scan 2s linear infinite;
+            border-radius: 2px;
+        }
+
+        @keyframes scan {
+            0% {
+                top: 10px;
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 1;
+            }
+
+            100% {
+                top: 230px;
+                opacity: 0;
+            }
+        }
+
+        .timer-badge {
+            background: #e8f0fe;
+            color: var(--primary);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 24px;
+            font-weight: 500;
+            font-variant-numeric: tabular-nums;
+            margin-bottom: 12px;
+        }
+
+        .status-msg {
+            color: var(--text-secondary);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dot-pulse {
+            width: 8px;
+            height: 8px;
+            background-color: var(--success);
+            border-radius: 50%;
+            animation: pulse-dot 1.5s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+
+            50% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+        }
+
+        /* Success State */
+        .success-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            display: none;
+            /* Flex when active */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .check-circle {
+            width: 80px;
+            height: 80px;
+            /* background: var(--success); */
+            /* We use SVG for animation */
+            border-radius: 50%;
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .success-text {
+            font-size: 24px;
+            font-weight: 400;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: slideUpText 0.5s ease 0.3s forwards;
+            text-align: center;
+        }
+
+        .success-amount {
+            font-size: 36px;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: slideUpText 0.5s ease 0.35s forwards;
+        }
+
+        .success-sub {
+            font-size: 16px;
+            color: var(--text-secondary);
+            opacity: 0;
+            transform: translateY(10px);
+            animation: slideUpText 0.5s ease 0.4s forwards;
+        }
+
+        @keyframes slideUpText {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Footer */
+        .footer-note {
+            margin-top: auto;
+            padding: 20px;
+            text-align: center;
+            color: #9aa0a6;
+            font-size: 12px;
+        }
+
+        .secure-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #5f6368;
+        }
+
+        /* SVG Checkmark Animation */
+        .checkmark__circle {
+            stroke-dasharray: 166;
+            stroke-dashoffset: 166;
+            stroke-width: 2;
+            stroke-miterlimit: 10;
+            stroke: var(--success);
+            fill: none;
+            animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        }
+
+        .checkmark {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: block;
+            stroke-width: 2;
+            stroke: #fff;
+            stroke-miterlimit: 10;
+            margin: 0 auto;
+            box-shadow: inset 0px 0px 0px var(--success);
+            animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+        }
+
+        .checkmark__check {
+            transform-origin: 50% 50%;
+            stroke-dasharray: 48;
+            stroke-dashoffset: 48;
+            animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+        }
+
+        @keyframes stroke {
+            100% {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        @keyframes scale {
+
+            0%,
+            100% {
+                transform: none;
+            }
+
+            50% {
+                transform: scale3d(1.1, 1.1, 1);
+            }
+        }
+
+        @keyframes fill {
+            100% {
+                box-shadow: inset 0px 0px 0px 50px var(--success);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="mobile-container">
+        <!-- Header -->
+        <div class="header">
+            <button class="back-btn" onclick="history.back()">
+                <svg viewBox="0 0 24 24">
+                    <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"></path>
+                </svg>
+            </button>
+            <img src="images/logo.png" style="height: 30px; margin-right: 10px;" alt="GPay Logo">
+            <span class="header-title">Add money</span>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content" id="mainContent">
+            <div class="payment-card">
+                <div class="qr-wrapper">
+                    <img src="qr.jpeg" alt="QR Code" class="qr-image">
+                    <div class="scan-line"></div>
+                </div>
+
+                <div class="timer-badge" id="timer">05:00</div>
+
+                <div class="status-msg">
+                    <div class="dot-pulse"></div>
+                    Waiting for payment confirmation...
+                </div>
+            </div>
+
+            <div class="footer-note">
+                Do not close this window
+                <div class="secure-badge">
+                    <svg style="width:12px;height:12px;fill:currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" />
+                    </svg>
+                    Top-end encrypted transaction
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Overlay -->
+        <div class="success-overlay" id="successLayer">
+            <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
+                <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+            </svg>
+            <div class="success-text">Payment Accepted</div>
+            <div class="success-amount" id="successAmountDisplay"></div>
+            <div class="success-sub">Money added to wallet successfully</div>
+        </div>
+
+    </div>
+
+    <!-- Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let totalTime = 300; // 5 Minutes
+            // Random wait time between 90 seconds (1:30) and 120 seconds (2:00)
+            let waitTime = 90 + Math.floor(Math.random() * 31);  // 90 to 120 seconds
+
+            // For testing, let's make it real. 
+            // Logic: we count down from 5:00. 
+            // When we reach 300 - 90 = 210s (3:30), we show success.
+
+            let timeLeft = totalTime;
+            const timerEl = document.getElementById('timer');
+            const successLayer = document.getElementById('successLayer');
+            const mainContent = document.getElementById("mainContent");
+
+            const timerInterval = setInterval(() => {
+                // Calculate Minutes and Seconds
+                let mins = Math.floor(timeLeft / 60);
+                let secs = timeLeft % 60;
+
+                // Update UI
+                timerEl.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+                // Check if we hit the trigger time (90 seconds elapsed)
+                let elapsed = totalTime - timeLeft;
+                if (elapsed >= waitTime) {
+                    clearInterval(timerInterval);
+                    triggerSuccess();
+                }
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    // Timeout logic could go here
+                }
+
+                timeLeft--;
+            }, 1000);
+
+            function triggerSuccess() {
+                // Random Amount Logic: 3000, 3500, 4000, 4500, 5000, 5500, 6000
+                const possibleAmounts = [3000, 3500, 4000, 4500, 5000, 5500, 6000];
+                const addedAmount = possibleAmounts[Math.floor(Math.random() * possibleAmounts.length)];
+
+                // Update Balance in LocalStorage
+                let currentBal = parseInt(localStorage.getItem('walletBalance'));
+                if (isNaN(currentBal)) currentBal = 0;
+
+                let newBal = currentBal + addedAmount;
+                localStorage.setItem('walletBalance', newBal);
+
+                // Update History
+                let transactions = JSON.parse(localStorage.getItem('redeemHistory') || '[]');
+                let date = new Date().toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+                transactions.unshift({
+                    amount: addedAmount,
+                    date: date,
+                    fullDate: new Date().toLocaleString(),
+                    status: "Success",
+                    title: "Money Added"
+                });
+                localStorage.setItem('redeemHistory', JSON.stringify(transactions));
+
+                // Update Success Message
+                document.getElementById('successAmountDisplay').innerText = `₹${addedAmount}`;
+                // document.querySelector('.success-sub').innerText = `Added to wallet successfully`;
+
+                // Fade out main
+                mainContent.style.opacity = '0';
+
+                setTimeout(() => {
+                    mainContent.style.display = 'none';
+                    successLayer.style.display = 'flex';
+                    // Trigger reflow/opacity for fade in
+                    setTimeout(() => {
+                        successLayer.style.opacity = '1';
+
+                        // Redirect to Balance Page after 3 seconds
+                        setTimeout(() => {
+                            window.location.href = "balance.html";
+                        }, 3000);
+                    }, 50);
+                }, 300);
+            }
+        });
+    </script>
+</body>
+
+</html>

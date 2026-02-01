@@ -17,11 +17,20 @@ body {
     max-width: 412px;
     background-color: #fff;
     min-height: 100vh;
+    min-height: 100dvh;
+    /* Dynamic viewport height for mobile */
     display: flex;
     flex-direction: column;
     position: relative;
     box-shadow: 0 0 25px rgba(0, 0, 0, 0.1);
     animation: fadeIn 0.4s ease-out;
+}
+
+@media (max-width: 412px) {
+    .mobile-container {
+        max-width: none;
+        box-shadow: none;
+    }
 }
 
 /* Animations */
@@ -332,6 +341,15 @@ body {
     box-sizing: border-box;
     display: flex;
     justify-content: center;
+    z-index: 100;
+}
+
+@media (max-width: 412px) {
+
+    .header,
+    .footer {
+        max-width: none;
+    }
 }
 
 .proceed-btn {

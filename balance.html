@@ -3,8 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Pay Balance</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DxPay Balance</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@400;500&display=swap"
         rel="stylesheet">
@@ -18,12 +18,20 @@
         }
 
         .mobile-container {
+            width: 100%;
             max-width: 412px;
             margin: 0 auto;
             min-height: 100vh;
+            min-height: 100dvh;
             display: flex;
             flex-direction: column;
             position: relative;
+        }
+
+        @media (max-width: 412px) {
+            .mobile-container {
+                max-width: none;
+            }
         }
 
         /* Header */
@@ -239,17 +247,14 @@
 
         <!-- Balance -->
         <div class="balance-section">
-            <svg class="gp-logo-small" viewBox="0 0 24 24">
-                <path fill="#5f6368"
-                    d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z" />
-            </svg>
-            <div class="bal-label">Google Pay balance</div>
+            <img src="images/logo.png" style="width: 120px; height: auto; margin-bottom: 20px;" alt="GPay Logo">
+            <div class="bal-label">DxPay balance</div>
             <div class="bal-amount" id="gpayBalance">₹0</div>
         </div>
 
         <!-- Buttons -->
         <div class="action-container">
-            <button class="gp-btn">
+            <button class="gp-btn" onclick="window.location.href='add_money.html'">
                 <svg viewBox="0 0 24 24">
                     <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
                 </svg>
